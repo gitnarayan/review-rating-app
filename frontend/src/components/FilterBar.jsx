@@ -10,29 +10,33 @@ export default function FilterBar({
 }) {
   return (
     <div className="bg-white rounded-xl shadow p-6 flex items-center justify-between mt-6">
-      <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-wrap gap-4 items-end">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-gray-500">Select City</span>
+          <select
+            className="border rounded-lg px-4 py-2 text-sm"
+            value={cityFilter}
+            onChange={(event) => onCityFilterChange(event.target.value)}
+          >
+            <option value="All">All Cities</option>
+            {cityOptions?.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <input
-          className="border rounded-lg px-4 py-2 text-sm"
+          className="border rounded-lg px-4 py-2 text-sm self-end"
           type="text"
-          placeholder="Search by company name"
+          placeholder="Find company"
           value={searchTerm}
           onChange={(event) => onSearchTermChange(event.target.value)}
         />
-        <select
-          className="border rounded-lg px-4 py-2 text-sm"
-          value={cityFilter}
-          onChange={(event) => onCityFilterChange(event.target.value)}
-        >
-          <option value="All">All Cities</option>
-          {cityOptions?.map((city) => (
-            <option key={city} value={city}>
-              {city}
-            </option>
-          ))}
-        </select>
 
         <button
-          className="rounded-lg bg-gradient-to-r from-fuchsia-500 to-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-md"
+          className="rounded-lg bg-gradient-to-r from-fuchsia-500 to-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-md self-end"
           type="button"
           onClick={onAddCompany}
         >

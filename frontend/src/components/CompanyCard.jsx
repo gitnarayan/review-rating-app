@@ -28,7 +28,16 @@ export default function CompanyCard({ company }) {
     return <span className="flex items-center gap-1">{stars}</span>;
   };
   const foundedDate = company?.foundedOn
-    ? new Date(company.foundedOn).toLocaleDateString("en-GB")
+    ? (() => {
+        const date = new Date(company.foundedOn);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      })()
     : "";
 
   const logoSrc =
@@ -37,7 +46,7 @@ export default function CompanyCard({ company }) {
       : company?.logo;
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 flex justify-between items-center mt-6">
+    <div className="bg-white rounded-xl shadow p-6 flex justify-between items-center mt-6 relative">
       <div className="flex gap-5">
         {logoSrc ? (
           <img
@@ -71,10 +80,13 @@ export default function CompanyCard({ company }) {
         </div>
       </div>
 
+      {foundedDate && (
+        <p className="text-xs text-gray-400 absolute top-3 right-4">
+          Founded on {foundedDate}
+        </p>
+      )}
+
       <div className="text-right">
-        {foundedDate && (
-          <p className="text-xs text-gray-400">Founded on {foundedDate}</p>
-        )}
         <Link
           className="mt-2 inline-block bg-gray-900 text-white px-4 py-2 rounded-lg text-sm"
           to={`/companies/${company?._id}`}

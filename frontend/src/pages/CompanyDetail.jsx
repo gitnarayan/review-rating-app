@@ -93,9 +93,18 @@ export default function CompanyDetail() {
     return Number((total / reviews.length).toFixed(1));
   }, [reviews]);
 
-const foundedDate = company?.foundedOn
-  ? new Date(company.foundedOn).toLocaleDateString("en-GB")
-  : "";
+  const foundedDate = company?.foundedOn
+    ? (() => {
+        const date = new Date(company.foundedOn);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      })()
+    : "";
   const logoSrc =
     company?.logo && company.logo.startsWith("/uploads")
       ? `${API_BASE}${company.logo}`
@@ -207,55 +216,68 @@ const foundedDate = company?.foundedOn
               </div>
             </div>
           )}
-        </div>
-
-        {!loading && !error && (
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow">
-            <div className="mb-4 flex items-center justify-between text-sm text-gray-500">
-              <span>Result Found: {reviews.length}</span>
-            </div>
-            {reviews.length === 0 && (
-              <p className="text-sm text-gray-500">No reviews yet.</p>
-            )}
-            <div className="space-y-6">
-              {reviews.map((review) => {
-                const reviewDate = review?.createdAt
-                  ? new Date(review.createdAt).toLocaleDateString("en-GB")
-                  : "";
-                return (
-                  <div key={review._id} className="flex gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gray-200" />
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {review?.fullName || "Anonymous"}
-                          </p>
-                          {reviewDate && (
-                            <p className="text-xs text-gray-400">
-                              {reviewDate}
+          {!loading && !error && (
+            <div className="mt-6 border-t border-gray-100 pt-6">
+              <div className="mb-4 flex items-center justify-between text-sm text-gray-500">
+                <span>Result Found: {reviews.length}</span>
+              </div>
+              {reviews.length === 0 && (
+                <p className="text-sm text-gray-500">No reviews yet.</p>
+              )}
+              <div className="space-y-6">
+                {reviews.map((review) => {
+                  const reviewDateTime = review?.createdAt
+                    ? (() => {
+                        const date = new Date(review.createdAt);
+                        if (Number.isNaN(date.getTime())) {
+                          return "";
+                        }
+                        const day = String(date.getDate()).padStart(2, "0");
+                        const month = String(date.getMonth() + 1).padStart(2, "0");
+                        const year = date.getFullYear();
+                        const timePart = date.toLocaleTimeString("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        });
+                        return `${day}-${month}-${year}, ${timePart}`;
+                      })()
+                    : "";
+                  return (
+                    <div key={review._id} className="flex gap-4">
+                      <div className="h-12 w-12 rounded-full bg-gray-200" />
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center justify-between gap-4">
+                          <div>
+                            <p className="font-semibold text-gray-900">
+                              {review?.fullName || "Anonymous"}
                             </p>
-                          )}
+                            {reviewDateTime && (
+                              <p className="text-xs text-gray-400">
+                                {reviewDateTime}
+                              </p>
+                            )}
+                          </div>
+                          {renderStars(review?.rating)}
                         </div>
-                        {renderStars(review?.rating)}
+                        {review?.subject && (
+                          <p className="mt-2 text-sm font-semibold text-gray-700">
+                            {review.subject}
+                          </p>
+                        )}
+                        {review?.reviewText && (
+                          <p className="mt-2 text-sm text-gray-600">
+                            {review.reviewText}
+                          </p>
+                        )}
                       </div>
-                      {review?.subject && (
-                        <p className="mt-2 text-sm font-semibold text-gray-700">
-                          {review.subject}
-                        </p>
-                      )}
-                      {review?.reviewText && (
-                        <p className="mt-2 text-sm text-gray-600">
-                          {review.reviewText}
-                        </p>
-                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {isModalOpen && (
