@@ -3,9 +3,9 @@ import Header from "../components/Header";
 import FilterBar from "../components/FilterBar";
 import CompanyCard from "../components/CompanyCard";
 
+const rawApiBase = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ?? "";
 const API_BASE =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
-  "http://localhost:5000";
+  rawApiBase || (import.meta.env.PROD ? "" : "http://localhost:5000");
 
 export default function CompanyList() {
   const [companies, setCompanies] = useState([]);

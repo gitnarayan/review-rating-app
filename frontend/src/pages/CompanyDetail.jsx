@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 
+const rawApiBase = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ?? "";
 const API_BASE =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
-  "http://localhost:5000";
+  rawApiBase || (import.meta.env.PROD ? "" : "http://localhost:5000");
 
 const renderStars = (value) => {
   const stars = [];
