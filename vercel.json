@@ -1,7 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "http://65.2.8.222/api/$1" },
-    { "source": "/uploads/(.*)", "destination": "http://65.2.8.222/uploads/$1" },
-    { "source": "/health", "destination": "http://65.2.8.222/health" }
-  ]
-}
